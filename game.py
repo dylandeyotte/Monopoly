@@ -1,5 +1,5 @@
 from props_and_colours import END, GREEN, RED
-from player import player_list, lookup
+from player import player_list, lookup_create
 from card import Card
 
 class Game:
@@ -229,9 +229,8 @@ class Game:
         return
     
     def trade(self, player1, player2, prop1, prop2):
+        lookup = lookup_create()
         p2 = lookup.get(player2)
-        if prop1 not in player1.bought or prop2 not in p2.bought:
-            print(f'Invalid transaction')
         player1.bought.remove(prop1)
         p2.bought.append(prop1)
         p2.bought.remove(prop2)
@@ -302,6 +301,8 @@ class Game:
             self.card.shuffled_chance.append(self.card.jail_card_chance)
         elif deck =='chest':
             self.card.shuffled_chest.append(self.card.jail_card_chest)
+    
+    
 
 
 

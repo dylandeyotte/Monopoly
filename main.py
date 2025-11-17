@@ -1,5 +1,6 @@
-from player import player_list, lookup
+from player import player_list, lookup_create, setup
 from game import Game
+from props_and_colours import END, GREEN, RED
 game = Game(player_list)
 
             
@@ -35,7 +36,7 @@ def roll_turn(player):
             game.check_space(player)
             property_name = game.board[player.position]
             if property_name in game.prices:
-                answer = input(f'Do you want to buy {game.colour(property_name)} for \033[38;5;196m{game.prices[property_name]}\033[0m?')
+                answer = input(f'Do you want to buy {game.colour(property_name)} for {RED}{game.prices[property_name]}{END}?')
                 if answer == 'y':
                     game.buy_property(player)
                 elif answer == 'n':
@@ -45,7 +46,7 @@ def roll_turn(player):
             game.check_space(player)
             property_name = game.board[player.position]
             if property_name in game.prices:
-                answer = input(f'Do you want to buy {game.colour(property_name)} for \033[38;5;196m{game.prices[property_name]}\033[0m?')
+                answer = input(f'Do you want to buy {game.colour(property_name)} for {RED}{game.prices[property_name]}{END}?')
                 if answer == 'y':
                     game.buy_property(player)
                     break
@@ -79,13 +80,17 @@ def player_turn(player):
             game.print_dict()
         elif choice == '4':
             colour = input('Which set of properties?')
-            game.buy_house(player, colour)
+            game.buy_house(player, colour.lower())
         elif choice == '5':
+            lookup = lookup_create()
             tradee = input(f'Which player will {player} trade with?')
             tradee_name = lookup.get(tradee)
             prop1 = input(f'Which property will {player} trade?')
             prop2 = input(f'Which property will {tradee_name} trade?')
-            game.trade(player, tradee, prop1, prop2)
+            if prop1 in player.bought and prop2 in tradee_name.bought:
+                game.trade(player, tradee, prop1, prop2)
+            else:
+                print(f'Invalid transaction')
         elif choice == '6':
             if player.in_jail == False:
                 print(f'{player} is not in jail')
@@ -130,5 +135,5 @@ def game_turn():
         if len(player_list) == 1:
             break
     
-
+setup()
 game_turn()
