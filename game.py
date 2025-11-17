@@ -1,135 +1,16 @@
-from props_and_colours import END, GREEN, RED
-from player import player_list, lookup_create
 from card import Card
+from props_and_colours import *
+from player import player_list, lookup_create
 
 class Game:
     def __init__(self, players):
         self.players = players
         self.card = Card()
-        self.bought = {}
-        self.board = ['GO', 'Mediterranean Avenue', 'Community Chest', 'Baltic Avenue', 'Income Tax', 'Reading Railroad', 'Oriental Avenue', 'Chance', 'Vermont Avenue', 'Connecticut Avenue',
-'Jail / Just Visiting', 'St. Charles Place', 'Electric Company', 'States Avenue', 'Virginia Avenue', 'Pennsylvania Railroad', 'St. James Place', 'Community Chest', 'Tennessee Avenue', 'New York Avenue',
-'Free Parking', 'Kentucky Avenue', 'Chance', 'Indiana Avenue', 'Illinois Avenue', 'B&O Railroad', 'Atlantic Avenue', 'Ventnor Avenue', 'Water Works', 'Marvin Gardens',
-'Go to Jail', 'Pacific Avenue', 'North Carolina Avenue', 'Community Chest', 'Pennsylvania Avenue', 'Short Line Railroad', 'Chance', 'Park Place', 'Luxury Tax', 'Boardwalk']
+        self.bought = {} 
         self.end_game = False
-        self.prices = {
-    'Mediterranean Avenue': 60,
-    'Baltic Avenue': 60,
-    'Oriental Avenue': 100,
-    'Vermont Avenue': 100,
-    'Connecticut Avenue': 120,
-    'St. Charles Place': 140,
-    'States Avenue': 140,
-    'Virginia Avenue': 160,
-    'St. James Place': 180,
-    'Tennessee Avenue': 180,
-    'New York Avenue': 200,
-    'Kentucky Avenue': 220,
-    'Indiana Avenue': 220,
-    'Illinois Avenue': 240,
-    'Atlantic Avenue': 260,
-    'Ventnor Avenue': 260,
-    'Marvin Gardens': 280,
-    'Pacific Avenue': 300,
-    'North Carolina Avenue': 300,
-    'Pennsylvania Avenue': 320,
-    'Park Place': 350,
-    'Boardwalk': 400,
-    'Reading Railroad': 200,
-    'Pennsylvania Railroad': 200,
-    'B&O Railroad': 200,
-    'Short Line Railroad': 200,
-    'Electric Company': 150,
-    'Water Works': 150,
-}
-        self.rent = {
-    'Mediterranean Avenue': [2, 10, 30, 90, 160, 250],
-    'Baltic Avenue': [4, 20, 60, 180, 320, 450],
-    'Oriental Avenue': [6, 30, 90, 270, 400, 550],
-    'Vermont Avenue': [6, 30, 90, 270, 400, 550],
-    'Connecticut Avenue': [8, 40, 100, 300, 450, 600],
-    'St. Charles Place': [10, 50, 150, 450, 625, 750],
-    'States Avenue': [10, 50, 150, 450, 625, 750],
-    'Virginia Avenue': [12, 60, 180, 500, 700, 900],
-    'St. James Place': [14, 70, 200, 550, 750, 950],
-    'Tennessee Avenue': [14, 70, 200, 550, 750, 950],
-    'New York Avenue': [16, 80, 220, 600, 800, 1000],
-    'Kentucky Avenue': [18, 90, 250, 700, 875, 1050],
-    'Indiana Avenue': [18, 90, 250, 700, 875, 1050],
-    'Illinois Avenue': [20, 100, 300, 750, 925, 1100],
-    'Atlantic Avenue': [22, 110, 330, 800, 975, 1150],
-    'Ventnor Avenue': [22, 110, 330, 800, 975, 1150],
-    'Marvin Gardens': [24, 120, 360, 850, 1025, 1200],
-    'Pacific Avenue': [26, 130, 390, 900, 1100, 1275],
-    'North Carolina Avenue': [26, 130, 390, 900, 1100, 1275],
-    'Pennsylvania Avenue': [28, 150, 450, 1000, 1200, 1400],
-    'Park Place': [35, 175, 500, 1100, 1300, 1500],
-    'Boardwalk': [50, 200, 600, 1400, 1700, 2000],
-    'Reading Railroad': [25, 50, 100, 200],
-    'Pennsylvania Railroad': [25, 50, 100, 200],
-    'B&O Railroad': [25, 50, 100, 200],
-    'Short Line Railroad': [25, 50, 100, 200],
-    'Electric Company': [0],
-    'Water Works': [0]
-
-}
-        self.house = {
-    'Mediterranean Avenue': [50, 0],
-    'Baltic Avenue': [50, 0],
-    'Oriental Avenue': [50, 0],
-    'Vermont Avenue': [50, 0],
-    'Connecticut Avenue': [50, 0],
-    'St. Charles Place': [100, 0],
-    'States Avenue': [100, 0],
-    'Virginia Avenue': [100, 0],
-    'St. James Place': [100, 0],
-    'Tennessee Avenue': [100, 0],
-    'New York Avenue': [100, 0],
-    'Kentucky Avenue': [150, 0],
-    'Indiana Avenue': [150, 0],
-    'Illinois Avenue': [150, 0],
-    'Atlantic Avenue': [150, 0],
-    'Ventnor Avenue': [150, 0],
-    'Marvin Gardens': [150, 0],
-    'Pacific Avenue': [200, 0],
-    'North Carolina Avenue': [200, 0],
-    'Pennsylvania Avenue': [200, 0],
-    'Park Place': [200, 0],
-    'Boardwalk': [200, 0],
-    'Reading Railroad': [0, 0],
-    'Pennsylvania Railroad': [0, 0],
-    'B&O Railroad': [0, 0],
-    'Short Line Railroad': [0, 0],
-    'Electric Company': [0, 0],
-    'Water Works': [0, 0]
-    
-}
-        self.colours = {
-    '\033[38;5;130m': ['Mediterranean Avenue', 'Baltic Avenue'],                            #Brown
-    '\033[38;5;111m': ['Oriental Avenue', 'Vermont Avenue', 'Connecticut Avenue'],      #Light Blue
-    '\033[38;5;200m': ['St. Charles Place', 'States Avenue', 'Virginia Avenue'],            #Magenta
-    '\033[38;5;208m': ['St. James Place', 'Tennessee Avenue', 'New York Avenue'],       #Orange
-    '\033[38;5;196m': ['Kentucky Avenue', 'Indiana Avenue', 'Illinois Avenue'],             #Red
-    '\033[38;5;190m': ['Atlantic Avenue', 'Ventnor Avenue', 'Marvin Gardens'],          #Yellow
-    '\033[38;5;34m': ['Pacific Avenue', 'North Carolina Avenue', 'Pennsylvania Avenue'],    #Green
-    '\033[38;5;21m': ['Park Place', 'Boardwalk'],                                       #Dark Blue
-    '\033[38;5;245m': ['Reading Railroad', 'Pennsylvania Railroad', 'B&O Railroad', 'Short Line Railroad'],     #Grey
-    '\033[38;5;225m': ['Electric Company', 'Water Works']                               #Pink
-    
-}
-        self.house_colours = {
-    'Brown': ['Mediterranean Avenue', 'Baltic Avenue'],                           
-    'Light Blue': ['Oriental Avenue', 'Vermont Avenue', 'Connecticut Avenue'],     
-    'Magenta': ['St. Charles Place', 'States Avenue', 'Virginia Avenue'],            
-    'Orange': ['St. James Place', 'Tennessee Avenue', 'New York Avenue'],      
-    'Red': ['Kentucky Avenue', 'Indiana Avenue', 'Illinois Avenue'],             
-    'Yellow': ['Atlantic Avenue', 'Ventnor Avenue', 'Marvin Gardens'],          
-    'Green': ['Pacific Avenue', 'North Carolina Avenue', 'Pennsylvania Avenue'],    
-    'Dark Blue': ['Park Place', 'Boardwalk']                                       
-    
-}
+                                
     def colour(self,property):
-        font_colour = next((k for k, v in self.colours.items() if property in v), None)
+        font_colour = next((k for k, v in colours.items() if property in v), None)
         return f'{font_colour}{property}{END}'
 
     def check_space(self, player):
@@ -138,39 +19,39 @@ class Game:
             self.go_check(player)
         player.skip_go = False
         
-        if self.board[player.position] in self.rent:
-            print(f'{player} landed on {self.colour(self.board[player.position])}')
+        if board[player.position] in rent:
+            print(f'{player} landed on {self.colour(board[player.position])}')
         else:
-            print(f'{player} landed on {(self.board[player.position])}')
+            print(f'{player} landed on {(board[player.position])}')
 
-        if self.board[player.position] == 'Go to Jail':  
+        if board[player.position] == 'Go to Jail':  
             self.go_to_jail(player)
             return
-        elif self.board[player.position] == 'Chance':
+        elif board[player.position] == 'Chance':
             self.card.draw_chance(self, player)
             return
-        elif self.board[player.position] == 'Community Chest':
+        elif board[player.position] == 'Community Chest':
             self.card.draw_chest(self, player)
             return
-        elif self.board[player.position] == 'Luxury Tax':  
+        elif board[player.position] == 'Luxury Tax':  
             print(f'Luxury Tax! {RED}-100{END}')
             if player.bank > 100:
                 player.lose_money(100)
                 player.check_balance()
             else:
                 self.erase_player(player)              
-        elif self.board[player.position] == 'Income Tax':    
+        elif board[player.position] == 'Income Tax':    
             print(f'Income Tax! {RED}-200{END}')
             if player.bank > 200:
                 player.lose_money(200)
                 player.check_balance()
             else: 
                 self.erase_player(player)        
-        elif self.board[player.position] in self.bought: 
+        elif board[player.position] in self.bought: 
             if player.skip_rent == False:
                 self.pay_rent(player)
             player.skip_rent = False
-        return self.board[player.position]
+        return board[player.position]
     
     def go_check(self, player, position=None, reverse=False):
         prev_position = player.position
@@ -194,6 +75,10 @@ class Game:
         print(f'{player} is in jail') 
         return
     
+    def rage_quit(self, player):
+        self.erase_player(player)
+        print(f'All mortal possessions have been forfeited. {player} is a big baby.')
+    
     def erase_player(self, player):
         player.bank = 0
         player.bought.clear()
@@ -205,27 +90,27 @@ class Game:
         player_list.remove(player)
                                                   
     def buy_property(self, player):
-        self.property_name = self.board[player.position]
-        if self.bought.get(self.property_name) == player:
-            print(f'{self.colour(self.property_name)} already owned')
+        property_name = board[player.position]
+        if self.bought.get(property_name) == player:
+            print(f'{self.colour(property_name)} already owned')
             return
-        elif self.property_name in self.prices:
-            if player.bank < self.prices[self.property_name]:
+        elif property_name in prices:
+            if player.bank < prices[property_name]:
                 print('Cannot afford')
                 return
-            self.railroads = self.colours['\033[38;5;245m']
-            if self.property_name in self.railroads:
-                if any(roads in player.bought for roads in self.railroads):
-                    self.owned_roads = {roads for roads in self.railroads if roads in player.bought or roads == self.property_name}
-                    self.count = len(self.owned_roads)
-                    for road in self.owned_roads:
-                        self.house[road][1] = self.count - 1
-            player.lose_money(self.prices[self.property_name])
-            print(f'{player} bought {self.colour(self.property_name)} for {RED}{self.prices[self.property_name]}{END}')
+            railroads = colours['\033[38;5;245m']
+            if property_name in railroads:
+                if any(roads in player.bought for roads in railroads):
+                    owned_roads = {roads for roads in railroads if roads in player.bought or roads == property_name}
+                    count = len(owned_roads)
+                    for road in owned_roads:
+                        house[road][1] = count - 1
+            player.lose_money(prices[property_name])
+            print(f'{player} bought {self.colour(property_name)} for {RED}{prices[property_name]}{END}')
             player.check_balance()
-            self.prices.pop(self.property_name)
-            self.bought[self.property_name] = player
-            player.bought.append(self.property_name)
+            prices.pop(property_name)
+            self.bought[property_name] = player
+            player.bought.append(property_name)
         return
     
     def trade(self, player1, player2, prop1, prop2):
@@ -240,20 +125,20 @@ class Game:
         print(f'{player1} sent {self.colour(prop1)} to {p2} for {self.colour(prop2)}')
     
     def buy_house(self, player, colour):
-            property_list = self.house_colours[colour]
+            property_list = house_colours[colour]
             if set(property_list).issubset(player.bought):
-                if player.bank >= (self.house[property_list[0]])[0] * len(property_list):
-                    for property in self.house:
+                if player.bank >= (house[property_list[0]])[0] * len(property_list):
+                    for property in house:
                         if property in property_list:
-                            if self.house[property][1] == 5:
+                            if house[property][1] == 5:
                                 print('Hotel already purchased')
                                 return
-                            self.house[property][1] += 1
+                            house[property][1] += 1
                     if len(property_list) == 2:
                         print(f'{player} bought houses on {self.colour(property_list[0])} and {self.colour(property_list[1])}')
                     elif len(property_list) == 3:
                         print(f'{player} bought houses on {self.colour(property_list[0])}, {self.colour(property_list[1])}, and {self.colour(property_list[2])}')
-                    player.lose_money((self.house[property_list[0]])[0] * len(property_list))
+                    player.lose_money((house[property_list[0]])[0] * len(property_list))
                     player.check_balance()
                 else:
                     print('Cannot afford')
@@ -261,11 +146,11 @@ class Game:
                 print(f'{player} does not own monopoly')
    
     def pay_rent(self, player): 
-        self.property_name = self.board[player.position] 
-        if self.property_name in self.bought:
-            owner = self.bought[self.property_name]
+        property_name = board[player.position] 
+        if property_name in self.bought:
+            owner = self.bought[property_name]
             if owner != player:
-                if self.property_name == 'Electric Company' or self.property_name == 'Water Works':
+                if property_name == 'Electric Company' or property_name == 'Water Works':
                     if self.bought.get('Electric Company') and self.bought.get('Water Works') and self.bought['Electric Company'] == self.bought['Water Works']:
                         mult = 10
                     else:                                                                               
@@ -277,13 +162,13 @@ class Game:
                     player.lose_money(player.current_roll()*mult)
                     owner.add_money(player.current_roll()*mult)
                 else:
-                    self.house_num = self.house[self.property_name][1]
-                    if player.bank < self.rent[self.property_name][self.house_num]:
+                    house_num = house[property_name][1]
+                    if player.bank < rent[property_name][house_num]:
                         self.erase_player(player)
                         return
-                    print(f'{player} owes {RED}{self.rent[self.property_name][self.house_num]}{END} to {owner}')
-                    player.lose_money(self.rent[self.property_name][self.house_num])
-                    owner.add_money(self.rent[self.property_name][self.house_num])
+                    print(f'{player} owes {RED}{rent[property_name][house_num]}{END} to {owner}')
+                    player.lose_money(rent[property_name][house_num])
+                    owner.add_money(rent[property_name][house_num])
                 player.check_balance()
                 owner.check_balance()
 
@@ -292,17 +177,140 @@ class Game:
             for prop in player.bought:
                 print(f'{player} - {self.colour(prop)}')      
     
-    def rage_quit(self, player):
-        self.erase_player(player)
-        print(f'All mortal possessions have been forfeited. {player} is a big baby.')
-
     def return_card(self, deck):
         if deck == 'chance':
             self.card.shuffled_chance.append(self.card.jail_card_chance)
         elif deck =='chest':
             self.card.shuffled_chest.append(self.card.jail_card_chest)
     
+    def roll_turn(self, player):
+        dice_count = 0
+        while dice_count < 3:
+            #Jail Check
+            player.roll(2)
+            if player.in_jail == True:
+                if player.rolled[0] != player.rolled[1]:
+                    player.jail_count +=1
+                    if player.jail_count < 3:
+                        print(f'{player} is stuck in Jail')
+                        player.history.pop(player.n)
+                        break
+                    elif player.jail_count == 3:
+                        player.in_jail = False
+                        player.jail_count = 0
+                        print(f'{player} is out of Jail')
+                        break
+                elif player.rolled[0] == player.rolled[1]:
+                    player.in_jail = False
+                    print(f'Doubles! {player} is out of Jail')
+            #Main Turn
+            if player.rolled[0] == player.rolled[1]:
+                dice_count += 1
+                if dice_count == 3:
+                    print(f'{player} rolled doubles three times')
+                    self.go_to_jail(player)
+                    break 
+                print(f'{player} turn {player.n}: {player.history[player.n]} ({player.rolled[0]} and {player.rolled[1]})')
+                self.check_space(player)
+                property_name = board[player.position]
+                if property_name in prices:
+                    answer = input(f'Do you want to buy {self.colour(property_name)} for {RED}{prices[property_name]}{END}?')
+                    if answer == 'y':
+                        self.buy_property(player)
+                    elif answer == 'n':
+                        continue
+            else:  
+                print(f'{player} turn {player.n}: {player.history[player.n]} ({player.rolled[0]} and {player.rolled[1]})')
+                self.check_space(player)
+                property_name = board[player.position]
+                if property_name in prices:
+                    answer = input(f'Do you want to buy {self.colour(property_name)} for {RED}{prices[property_name]}{END}?')
+                    if answer == 'y':
+                        self.buy_property(player)
+                        break
+                    elif answer == 'n':
+                        break    
+                break
+                                
+            
+    def player_turn(self, player):
+        #Bankruptcy Check
+        if player.is_bankrupt == True:
+            player_list.remove(player)
+        if len(player_list) == 1:
+            print(f'{player_list[0]} has won the game!')
+            self.end_game == True
+            return
+        #Turn Menu
+        while True:
+            choice_list = ['1', '2', '3', '4', '5', '6', '7', '8']
+            print(f'{player} turn')
+            print('1. Roll\n2. Check balance\n3. Check properties\n4. Buy house\n5. Trade property\n6. Get out of jail\n7. Rage quit\n8. End game')
+            choice = input('Enter your choice: ')
+            if choice not in choice_list:
+                print('Please input valid option')
+            elif choice == '1':
+                self.roll_turn(player)
+                break
+            elif choice == '2':
+                player.check_balance()
+            elif choice == '3':
+                self.print_dict()
+            elif choice == '4':
+                colour = input('Which set of properties?')
+                self.buy_house(player, colour)
+            elif choice == '5':
+                lookup = lookup_create()
+                tradee = input(f'Which player will {player} trade with?')
+                tradee_name = lookup.get(tradee)
+                prop1 = input(f'Which property will {player} trade?')
+                prop2 = input(f'Which property will {tradee_name} trade?')
+                if prop1 in player.bought and prop2 in tradee_name.bought:
+                    self.trade(player, tradee, prop1, prop2)
+                else:
+                    print(f'Invalid transaction')
+            elif choice == '6':
+                if player.in_jail == False:
+                    print(f'{player} is not in jail')
+                elif player.jail_card_chance == False and player.jail_card_chest == False:
+                    print('No Get Out of Jail cards available')
+                elif player.jail_card_chance == True and player.jail_card_chest == False:
+                    player.jail_card_chance = False
+                    player.in_jail = False
+                    self.return_card('chance')
+                    print(f'{player} is out of jail')
+                elif player.jail_card_chance == False and player.jail_card_chest == True:
+                    player.jail_card_chest = False
+                    player.in_jail = False
+                    self.return_card('chest')
+                    print(f'{player} is out of jail')
+                elif player.jail_card_chance == True and player.jail_card_chest == True:
+                    player.jail_card_chest = False
+                    player.in_jail = False
+                    self.return_card('chest')
+                    print(f'{player} is out of jail')       
+            elif choice == '7':
+                self.rage_quit(player)
+                break
+            elif choice == '8':
+                end = input('Are you sure?: ')
+                if end == 'n':
+                    print('Back to the game')
+                elif end == 'y':
+                    print('Game over')
+                    self.end_game = True
+                    break
+                else:
+                    print('Please input valid option')
     
+    def game_turn(self):
+        while self.end_game == False:
+            for player in player_list[:]:
+                self.player_turn(player)
+                if self.end_game:
+                    break
+            if len(player_list) == 1:
+                break    
 
 
 

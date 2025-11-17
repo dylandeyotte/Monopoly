@@ -1,6 +1,6 @@
 import random
 from player import player_list
-from props_and_colours import END, GREEN, RED
+from props_and_colours import *
 
 class Card:
     def __init__(self):
@@ -123,7 +123,7 @@ class Card:
     def pay_houses(self, player, deck, game):
         for prop in player.bought:
             if 'Railroad' not in prop:
-                house_amount = game.house[prop][1]
+                house_amount = house[prop][1]
                 if house_amount < 5:
                     if deck == 'chance':
                         player.lose_money(house_amount * 25)
@@ -141,37 +141,35 @@ class Card:
 
     def railroad(self, player, game):
         player.skip_rent = True
-
         distances = {5: (5 - player.position) % 40, 15: (15 - player.position) % 40, 25: (25 - player.position) % 40, 35: (35 - player.position) % 40}
         self.closest_railroad = min(distances, key = distances.get)
         self.change_position(player, self.closest_railroad, game)
         #PAY DOUBLE
-        self.property_name = game.board[player.position]
-        game.house_num = game.house[self.property_name][1]
+        self.property_name = board[player.position]
+        house_num = house[self.property_name][1]
         if self.property_name in game.bought:
             owner = game.bought[self.property_name]
             if owner != player:
-                if player.bank < game.rent[self.property_name][0]*2:
+                if player.bank < rent[self.property_name][0]*2:
                     game.erase_player(player)
                     return
-                print(f'{player} owes {RED}{(game.rent[self.property_name][game.house_num])*2}{END} to {owner}')      
-                player.lose_money((game.rent[self.property_name][game.house_num])*2)
-                owner.add_money((game.rent[self.property_name][game.house_num])*2)
+                print(f'{player} owes {RED}{(rent[self.property_name][house_num])*2}{END} to {owner}')      
+                player.lose_money((rent[self.property_name][house_num])*2)
+                owner.add_money((rent[self.property_name][house_num])*2)
                 player.check_balance()
                 owner.check_balance()
 
     def utility(self, player, game):
         player.skip_rent = True
         self.prev_roll = player.history[player.n]
-
         distances = {12: (12 - player.position) % 40, 28: (28 - player.position) % 40}
         self.closest_utility = min(distances, key = distances.get)
         self.change_position(player, self.closest_utility, game)
         #PAY 10X  
-        if game.board[player.position] in game.bought:
-            owner = game.bought[game.board[player.position]]
+        if board[player.position] in game.bought:
+            owner = game.bought[board[player.position]]
             if owner != player:
-                if game.board[player.position] == 'Electric Company' or game.board[player.position] == 'Water Works':
+                if board[player.position] == 'Electric Company' or board[player.position] == 'Water Works':
                     if player.bank < self.prev_roll*10:
                         game.erase_player(player)
                         return
